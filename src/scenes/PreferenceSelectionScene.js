@@ -133,7 +133,7 @@ export class PreferenceSelectionScene extends Phaser.Scene {
       this.add.text(
         SCENE_WIDTH / 2,
         SCENE_HEIGHT / 2,
-        "SAPPEEEEE",
+        "Estas Como Loquita !",
         {
           fontSize: "64px",
           fill: "#ffffff",
