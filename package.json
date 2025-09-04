@@ -1,13 +1,18 @@
 {
-  "name": "game-ia-test",
-  "private": true,
+  "name": "game-test-phaser",
   "version": "0.0.0",
+  "private": true,
+  "keywords": [],
+  "license": "ISC",
   "type": "module",
   "scripts": {
-    "dev": "vite",
     "build": "rm -rf dist && vite build",
-    "preview": "vite preview",
-    "deploy": "gh-pages -d dist"
+    "deploy": "gh-pages -d dist -b gh-pages -f",
+    "dev": "vite",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "phaser": "^3.90.0"
   },
   "devDependencies": {
     "eslint": "9.22.0",
@@ -17,10 +22,5 @@
     "stylelint-config-manzdev": "^0.0.18",
     "vite": "^6.2.0",
     "vite-tsconfig-paths": "^5.1.4"
-  },
-  "keywords": [],
-  "license": "ISC",
-  "dependencies": {
-    "phaser": "^3.90.0"
   }
 }

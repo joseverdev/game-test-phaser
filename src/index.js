@@ -1,7 +1,10 @@
 import Phaser from "phaser";
 
 import { SCENE_HEIGHT, SCENE_WIDTH } from "./modules/constanst";
+import { CompleteSequenceScene } from "./scenes/CompleteSequenceScene";
 import { CongratulationsScene } from "./scenes/CongratulationsScene";
+import { GradeSelectionScene } from "./scenes/GradeSelectionScene";
+import { PreferenceSelectionScene } from "./scenes/PreferenceSelectionScene";
 
 const config = {
   type: Phaser.AUTO,
@@ -14,8 +17,10 @@ const config = {
     height: SCENE_HEIGHT   // píxeles exactos
   },
   scene: [
+    GradeSelectionScene,
+    PreferenceSelectionScene,
+    CompleteSequenceScene,
     CongratulationsScene,
-    // CompleteSequenceScene,
   ],
   callbacks: {
     postBoot: function (game) {

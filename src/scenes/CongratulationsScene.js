@@ -13,14 +13,20 @@ export class CongratulationsScene extends Phaser.Scene {
   }
 
   create() {
+    // Desactivar la escena CompleteSequenceScene
+    this.scene.setVisible(false, "CompleteSequenceScene");
+    this.scene.pause("CompleteSequenceScene");
+
+    // Rectángulo semitransparente de overlay
     this.add.rectangle(
       SCENE_WIDTH / 2,
       SCENE_HEIGHT / 2,
       SCENE_WIDTH,
       SCENE_HEIGHT,
       0x000000,
-      0.5 // Opacidad (0 = transparente, 1 = opaco)
+      0.4
     );
+
     this.add.image(SCENE_WIDTH / 2, (SCENE_HEIGHT / 2) - 50, "trophy").setScale(0.6);
     this.add.image(150, (SCENE_HEIGHT / 2) - 50, "pennants").setScale(0.5);
     this.add.image(SCENE_WIDTH - 150, (SCENE_HEIGHT / 2) - 50, "pennants").setScale(-0.5, 0.5);
