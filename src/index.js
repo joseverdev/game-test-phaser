@@ -3,8 +3,7 @@ import Phaser from "phaser";
 import { SCENE_HEIGHT, SCENE_WIDTH } from "./modules/constanst";
 import { CompleteSequenceScene } from "./scenes/CompleteSequenceScene";
 import { CongratulationsScene } from "./scenes/CongratulationsScene";
-import { GradeSelectionScene } from "./scenes/GradeSelectionScene";
-import { PreferenceSelectionScene } from "./scenes/PreferenceSelectionScene";
+import { TutoCSScene } from "./scenes/TutoCSScene";
 
 const config = {
   type: Phaser.AUTO,
@@ -17,14 +16,16 @@ const config = {
     height: SCENE_HEIGHT   // píxeles exactos
   },
   scene: [
-    GradeSelectionScene,
-    PreferenceSelectionScene,
+    // GradeSelectionScene,
+    // PreferenceSelectionScene,
     CompleteSequenceScene,
+    TutoCSScene,
     CongratulationsScene,
   ],
   callbacks: {
     postBoot: function (game) {
       // Agrega un borde al canvas después de que Phaser lo crea
+      // todo:quitar este borde para evitar resize
       game.canvas.style.border = "2px solid red";
     }
   }

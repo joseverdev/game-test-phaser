@@ -10,6 +10,7 @@ export class CompleteSequenceScene extends Phaser.Scene {
   }
 
   create() {
+    this.scene.launch("TutoCSScene"); // Para a TutoCSScene e inicia CompleteSequenceScene
     const bg = this.add.rectangle(400, 195, 844, 390, 0x000000);
     bg.setAlpha(0.5);
 
@@ -87,6 +88,8 @@ export class CompleteSequenceScene extends Phaser.Scene {
       // Añadir al array para referencia
       appleContainers.push(appleContainer);
     }
+
+    // Crear elementos para el container con posiciones RELATIVAS
 
     // Función para verificar si está cerca del área objetivo
     const isNearTarget = (container, target) => {

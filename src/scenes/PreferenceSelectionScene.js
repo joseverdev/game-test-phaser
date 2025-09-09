@@ -10,6 +10,7 @@ export class PreferenceSelectionScene extends Phaser.Scene {
   preload() {
     // Aquí puedes cargar imágenes o assets si es necesario
     this.load.image("bana", "./assets/sprites/bana.png");
+    this.load.audio("sape", "./assets/sounds/sape.mp3");
   }
 
   create() {
@@ -144,6 +145,7 @@ export class PreferenceSelectionScene extends Phaser.Scene {
         }
       ).setOrigin(0.5);
 
+      this.sound.play("sape");
       this.time.delayedCall(2000, () => {
         this.scene.start("CompleteSequenceScene");
       });
