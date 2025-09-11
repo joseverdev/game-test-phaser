@@ -93,7 +93,9 @@ export class MainMenuScene extends Phaser.Scene {
         fontSize: "24px",
         fill: "#DC2626",
         fontFamily: "Fredoka",
-        fontWeight: "bold"
+        fontWeight: "bold",
+        stroke: "#DC2626",         // Color del borde igual al texto
+        strokeThickness: 1        // Grosor del borde (ajusta el valor para hacerlo más grueso)
       }
     ).setOrigin(1, 0.5); // Alineado a la derecha del texto, centrado verticalmente
 
@@ -198,7 +200,7 @@ export class MainMenuScene extends Phaser.Scene {
     });
 
     // Con el nuevo componente:
-    this.cuyGuide = new CuyGuide(this, 530, 360, {
+    this.cuyGuide = new CuyGuide(this, 530, 390, {
       dialogPosition: "left",
       dialogConfig: {
         width: 280,
@@ -212,7 +214,7 @@ export class MainMenuScene extends Phaser.Scene {
     });
 
     // Mostrar mensaje de bienvenida
-    this.cuyGuide.showDialog("¡Hola! Soy tu guía. Selecciona una aventura para comenzar.", 4000);
+    this.cuyGuide.showDialog("¡Hola! Soy tu guía. Selecciona una de las tres aventuras para comenzar.", 4000);
 
     this.backBtn = new BackBtn(this, 45, 36, {
       onClick: () => {
