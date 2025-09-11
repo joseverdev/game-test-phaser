@@ -219,16 +219,31 @@ export class CuyGuide extends Phaser.GameObjects.Container {
   hideDialog() {
     if (!this.currentDialog) return;
 
+    // Animar la desaparición del diálogo
     this.scene.tweens.add({
       targets: this.currentDialog,
       scale: 0.1,
       alpha: 0,
       duration: 200,
+      ease: "Back.easeIn"
+    });
+
+    // Animar la desaparición del personaje Cuy
+    this.scene.tweens.add({
+      targets: this.cuy,
+      alpha: 0,
+      scale: 0.1,
+      duration: 200,
       ease: "Back.easeIn",
       onComplete: () => {
+        // Limpiar después de que ambas animaciones terminen
         this.currentDialog.destroy();
         this.currentDialog = null;
         this.isDialogActive = false;
+
+        // Ocultar todo el container del CuyGuide
+        this.setVisible(false);
+
         this.processQueue();
       }
     });

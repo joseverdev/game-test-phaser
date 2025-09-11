@@ -176,22 +176,50 @@ export class MainMenuScene extends Phaser.Scene {
     menuConfig.forEach((config, index) => {
       const x = startX + (index * spacing);
 
-      if (index === 1) {
-        this.add.image(x, centerY, config.image).setOrigin(0.5, 0.4)
+      let menuImage;
+
+      menuImage = index === 1
+        ? this.add.image(x, centerY, config.image).setOrigin(0.5, 0.4)
           .setDisplaySize(160, 160)
           .setInteractive()
           .on("pointerdown", () => {
             console.log("Clicked on", config.text);
-          });
-      } else {
-        this.add.image(x, centerY, config.image)
+          })
+        : this.add.image(x, centerY, config.image)
           .setOrigin(0.5, 0.4)
           .setDisplaySize(180, 180)
           .setInteractive()
           .on("pointerdown", () => {
             console.log("Clicked on", config.text);
           });
+
+      // Configurar animación diferente para index 1 (tower)
+      if (index === 1) {
+        // Animación más sutil para la torre (index 1)
+        this.tweens.add({
+          targets: menuImage,
+          scaleX: 0.92,
+          scaleY: 0.92,
+          duration: 2000, // Duración más larga para que sea más lenta
+          yoyo: true,
+          repeat: -1,
+          ease: "Sine.easeInOut",
+          delay: 500
+        });
+      } else {
+        // Animación normal para castle (index 0) y world (index 2)
+        this.tweens.add({
+          targets: menuImage,
+          scaleX: 1.03, // Reducir de 1.05 a 1.03 para que sea más sutil
+          scaleY: 1.03,
+          duration: 2000,
+          yoyo: true,
+          repeat: -1,
+          ease: "Sine.easeInOut",
+          delay: 500
+        });
       }
+
       this.add.text(x, centerY - 90, config.text, textStyle).setOrigin(0.5, 0.5)
         .setInteractive()
         .on("pointerdown", () => {
