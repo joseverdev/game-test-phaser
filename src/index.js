@@ -1,9 +1,9 @@
 import Phaser from "phaser";
 
 import { SCENE_HEIGHT, SCENE_WIDTH } from "./modules/constanst";
-import { CompleteSequenceScene } from "./scenes/CompleteSequenceScene";
-import { CongratulationsScene } from "./scenes/CongratulationsScene";
-import { TutoCSScene } from "./scenes/TutoCSScene";
+import { MainMenuScene } from "./scenes/MainMenuScene.js";
+// import { MinigameSelectScene } from "./scenes/navigation/MinigameSelectScene.js";
+// import { CongratulationsScene } from "./scenes/shared/CongratulationsScene.js";
 
 const config = {
   type: Phaser.AUTO,
@@ -15,12 +15,17 @@ const config = {
     width: SCENE_WIDTH,   // píxeles exactos
     height: SCENE_HEIGHT   // píxeles exactos
   },
+  render: {
+    antialias: true,
+    pixelArt: false,
+    roundPixels: false
+  },
   scene: [
-    // GradeSelectionScene,
-    // PreferenceSelectionScene,
-    CompleteSequenceScene,
-    TutoCSScene,
-    CongratulationsScene,
+    MainMenuScene,           // Menú principal
+    // MinigameSelectScene,     // Selección de minijuego
+    // SequenceGameScene,       // Tu minijuego de secuencias
+    // TutoCSScene,            // Tutorial
+    // CongratulationsScene,    // Felicitaciones
   ],
   callbacks: {
     postBoot: function (game) {
@@ -71,6 +76,11 @@ function isMobile() {
   return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
 }
 
+// Función para detectar si es escritorio
+function isDesktop() {
+  return !isMobile() && !("ontouchstart" in globalThis);
+}
+
 // Función para ocultar barras del navegador en móviles
 function hideAddressBar() {
   if (isMobile()) {
@@ -83,8 +93,58 @@ function hideAddressBar() {
 // eslint-disable-next-line
 const game = new Phaser.Game(config);
 
-// Función para manejar el estado de pantalla completa
+// Configurar eventos al cargar
+globalThis.addEventListener("load", () => {
+  hideAddressBar();
+
+  // Solo configurar el botón de pantalla completa en móviles
+  const fullscreenBtn = document.querySelector("#fullscreen-btn");
+  if (fullscreenBtn) {
+    if (isMobile()) {
+      // En móviles, mostrar y configurar el botón
+      fullscreenBtn.style.display = "block";
+      fullscreenBtn.addEventListener("click", enterFullscreen);
+    } else {
+      // En escritorio, ocultar el botón
+      fullscreenBtn.style.display = "none";
+    }
+  }
+
+  // Escuchar cambios en el estado de pantalla completa (solo si no es escritorio)
+  if (!isDesktop()) {
+    document.addEventListener("fullscreenchange", handleFullscreenChange);
+    document.addEventListener("webkitfullscreenchange", handleFullscreenChange);
+    document.addEventListener("mozfullscreenchange", handleFullscreenChange);
+    document.addEventListener("MSFullscreenChange", handleFullscreenChange);
+  }
+
+  // Escuchar cambios de orientación para debug
+  if (screen.orientation) {
+    screen.orientation.addEventListener("change", () => {
+      console.log("Orientación cambiada a:", screen.orientation.angle, "grados");
+      console.log("Tipo de orientación:", screen.orientation.type);
+    });
+  }
+
+  // En móviles, ocultar el botón después de unos segundos si no se usa
+  if (isMobile()) {
+    setTimeout(() => {
+      if (!document.fullscreenElement && !document.webkitFullscreenElement) {
+        // Solo sugerir pantalla completa en móviles
+        const button = document.querySelector("#fullscreen-btn");
+        if (button && button.style.display !== "none") {
+          button.style.animation = "pulse 2s infinite";
+        }
+      }
+    }, 3000);
+  }
+});
+
+// Función para manejar el estado de pantalla completa (solo para móviles)
 function handleFullscreenChange() {
+  // Solo ejecutar si no es escritorio
+  if (isDesktop()) return;
+
   const isFullscreen = !!(document.fullscreenElement ||
                           document.webkitFullscreenElement ||
                           document.mozFullScreenElement ||

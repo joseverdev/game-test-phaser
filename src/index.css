@@ -56,7 +56,6 @@ body {
   border: 1px solid #fff;
   height: 390px;
   width: 844px;
-  background-image: url('./assets/bg/bg-test.jpg');
   background-size: cover;
   background-position: center;
   display: flex;
