@@ -1,42 +1,62 @@
 import { SEQUENCE_LEVELS, SEQUENCE_MINIGAME_CONFIG } from "../minigames/sequence/levels/sequenceLevels.js";
 
 export class MinigameManager {
+  static instances = new Map();
+
   constructor(minigameType) {
+    if (MinigameManager.instances.has(minigameType)) {
+      return MinigameManager.instances.get(minigameType);
+    }
+
     this.minigameType = minigameType;
     this.currentLevel = 1;
     this.levelData = this.getLevelData();
     this.config = this.getConfig();
     this.progress = this.loadProgress();
+    this.events = new Phaser.Events.EventEmitter();
+
+    MinigameManager.instances.set(minigameType, this);
+  }
+
+  static getInstance(minigameType) {
+    if (!MinigameManager.instances.has(minigameType)) {
+      new MinigameManager(minigameType);
+    }
+    return MinigameManager.instances.get(minigameType);
   }
 
   // === GESTIÓN DE DATOS ===
   getLevelData() {
     switch (this.minigameType) {
-      case "sequence": {
-        return SEQUENCE_LEVELS;
-      }
-      // case "matching":
-      //   return MATCHING_LEVELS;
-      default: {
-        throw new Error(`Unknown minigame type: ${this.minigameType}`);
-      }
+    case "sequence": {
+      return SEQUENCE_LEVELS;
+    }
+    // case "matching":
+    //   return MATCHING_LEVELS;
+    default: {
+      throw new Error(`Unknown minigame type: ${this.minigameType}`);
+    }
     }
   }
 
   getConfig() {
     switch (this.minigameType) {
-      case "sequence": {
-        return SEQUENCE_MINIGAME_CONFIG;
-      }
-      default: {
-        throw new Error(`Unknown minigame type: ${this.minigameType}`);
-      }
+    case "sequence": {
+      return SEQUENCE_MINIGAME_CONFIG;
+    }
+    default: {
+      throw new Error(`Unknown minigame type: ${this.minigameType}`);
+    }
     }
   }
 
   // === GESTIÓN DE NIVEL ACTUAL ===
   getCurrentLevelData() {
-    return this.levelData[this.currentLevel];
+    const data = this.levelData[this.currentLevel];
+    if (!data) {
+      throw new Error(`Level ${this.currentLevel} not found for minigame ${this.minigameType}`);
+    }
+    return data;
   }
 
   setCurrentLevel(levelNumber) {
@@ -77,6 +97,18 @@ export class MinigameManager {
     this.progress.totalPoints += (levelData.points * stars);
 
     this.saveProgress();
+
+    // Emitir evento de nivel completado
+    this.events.emit("levelCompleted", {
+      level: this.currentLevel,
+      stars,
+      time: performanceData.time,
+      attempts: performanceData.attempts,
+      totalStars: this.progress.totalStars,
+      hasNextLevel: this.hasNextLevel(),
+      unlockedNextLevel: nextLevel <= this.config.totalLevels
+    });
+
     return {
       hasNextLevel: this.hasNextLevel(),
       stars,

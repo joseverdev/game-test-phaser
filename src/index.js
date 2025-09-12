@@ -1,9 +1,11 @@
 import Phaser from "phaser";
 
+import { SequenceGameScene } from "./minigames/sequence/scenes/SequenceGameScene";
 import { SCENE_HEIGHT, SCENE_WIDTH } from "./modules/constanst";
-import { MainMenuScene } from "./scenes/MainMenuScene.js";
+import { MathMenuScene } from "./scenes/MathMenuScene";
+import { CongratulationsScene } from "./scenes/CongratulationsScene";
+import { MainMenuScene } from "./scenes/MainMenuScene";
 // import { MinigameSelectScene } from "./scenes/navigation/MinigameSelectScene.js";
-// import { CongratulationsScene } from "./scenes/shared/CongratulationsScene.js";
 
 const config = {
   type: Phaser.AUTO,
@@ -21,11 +23,12 @@ const config = {
     roundPixels: false
   },
   scene: [
-    MainMenuScene,           // Menú principal
+    MainMenuScene,
+    MathMenuScene,
     // MinigameSelectScene,     // Selección de minijuego
-    // SequenceGameScene,       // Tu minijuego de secuencias
+    SequenceGameScene,       // Tu minijuego de secuencias
+    CongratulationsScene,    // Felicitaciones
     // TutoCSScene,            // Tutorial
-    // CongratulationsScene,    // Felicitaciones
   ],
   callbacks: {
     postBoot: function (game) {
@@ -90,7 +93,6 @@ function hideAddressBar() {
   }
 }
 
-// eslint-disable-next-line
 const game = new Phaser.Game(config);
 
 // Configurar eventos al cargar

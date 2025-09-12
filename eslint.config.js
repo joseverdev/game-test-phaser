@@ -1,10 +1,20 @@
-import { recommended } from "eslint-config-manzdev";
-
 export default [
-  ...recommended,
   {
+    languageOptions: {
+      ecmaVersion: 2022,
+      sourceType: "module",
+      globals: {
+        console: "readonly",
+        window: "readonly",
+        document: "readonly",
+        Phaser: "readonly",
+      },
+    },
     rules: {
-      /* Tus reglas aquí */
-	 }
-  }
+      quotes: ["error", "double"],
+      semi: ["error", "always"],
+      "space-infix-ops": "error",
+      indent: ["error", 2],
+    },
+  },
 ];

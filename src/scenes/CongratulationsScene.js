@@ -1,19 +1,52 @@
 import Phaser from "phaser";
 
 import { SCENE_HEIGHT, SCENE_WIDTH } from "@/modules/constanst";
+import { NavigationUI } from "@/shared/components/NavigationUI";
 
 export class CongratulationsScene extends Phaser.Scene {
   constructor() {
     super({ key: "CongratulationsScene" });
   }
 
+  init(data) {
+    // Recibir datos del nivel completado
+    this.levelResult = data || {};
+    console.log("CongratulationsScene received data:", this.levelResult);
+  }
+
   preload() {
     this.load.image("trophy", "./assets/objects/trophy.svg");
     this.load.image("pennants", "./assets/objects/pennants.svg");
     this.load.audio("celebration", "./assets/sounds/children-celebration.wav");
+    this.load.image("bgMath", "./assets/bg/bg-math.jpg");
   }
 
   create() {
+
+    this.navigationUI = new NavigationUI(this, {
+
+      showBackButton: true,
+      showUserInfo: true,
+      showStreakInfo: true,
+      userInfo: {
+        name: "Jose",
+        avatar: "avatar"
+      },
+      streakInfo: {
+        count: 7,
+        icon: "flame"
+      },
+      onBackClick: () => {
+        console.log("Salir del juego");
+        // Aquí puedes agregar lógica para salir o ir a otra escena
+        this.scene.stop("CongratulationsScene");
+        this.scene.start("MathMenuScene");
+      }
+    });
+
+    
+    this.add.image(400, 300, "bgMath").setDisplaySize(800, 600);
+
     // Desactivar la escena CompleteSequenceScene
     this.scene.setVisible(false, "CompleteSequenceScene");
     this.scene.pause("CompleteSequenceScene");
@@ -31,13 +64,29 @@ export class CongratulationsScene extends Phaser.Scene {
     this.add.image(SCENE_WIDTH / 2, (SCENE_HEIGHT / 2) - 50, "trophy").setScale(0.6);
     this.add.image(150, (SCENE_HEIGHT / 2) - 50, "pennants").setScale(0.5);
     this.add.image(SCENE_WIDTH - 150, (SCENE_HEIGHT / 2) - 50, "pennants").setScale(-0.5, 0.5);
-    this.add.text(SCENE_WIDTH / 2, 300, "Eres un genio!", {
+
+    // Título de felicitación
+    this.add.text(SCENE_WIDTH / 2, 300, "¡Eres un genio!", {
       fontSize: "44px",
       fill: "#ffffff",
       strokeThickness: 4,
       stroke: "#000000",
       fontFamily: "Fredoka",
     }).setOrigin(0.5);
+
+    // Mostrar estadísticas del nivel si están disponibles
+    if (this.levelResult.time || this.levelResult.attempts) {
+      const timeText = this.levelResult.time ? `Tiempo: ${Math.floor(this.levelResult.time)}s` : "";
+      const attemptsText = this.levelResult.attempts ? `Intentos: ${this.levelResult.attempts}` : "";
+
+      this.add.text(SCENE_WIDTH / 2, 350, `${timeText} ${attemptsText}`, {
+        fontSize: "24px",
+        fill: "#ffff00",
+        strokeThickness: 2,
+        stroke: "#000000",
+        fontFamily: "Fredoka",
+      }).setOrigin(0.5);
+    }
 
     // Crear botón de flecha derecha para siguiente nivel
     const nextButton = this.add.graphics();
@@ -94,42 +143,18 @@ export class CongratulationsScene extends Phaser.Scene {
       nextButton.strokeRoundedRect(SCENE_WIDTH - 120, SCENE_HEIGHT - 80, 100, 60, 10);
     });
 
-    // TODO: Agregar funcionalidad para siguiente nivel
+    // Funcionalidad para siguiente nivel
     buttonContainer.on("pointerdown", () => {
-      // Obtener managers desde el registry
-      const gameManager = this.registry.get("gameManager");
-      const minigameManager = this.registry.get("currentMinigameManager");
+      console.log("Next level button clicked");
 
-      if (!minigameManager) {
-        console.error("No minigame manager found");
-        return;
-      }
+      // Por ahora, simplemente regresar al menú principal
+      // En el futuro, esto podría navegar al siguiente nivel
+      this.scene.stop("CongratulationsScene");
+      this.scene.start("MathMenuScene");
 
-      // Completar nivel actual y obtener información
-      const completionResult = minigameManager.completeCurrentLevel({
-        time: this.registry.get("levelTime") || 60,
-        attempts: this.registry.get("levelAttempts") || 1
-      });
-
-      if (completionResult.hasNextLevel) {
-        // Ir al siguiente nivel del mismo minijuego
-        const nextLevel = minigameManager.goToNextLevel();
-
-        // Regresar a la escena del minijuego con el nuevo nivel
-        this.scene.stop("CongratulationsScene");
-        this.scene.start("SequenceGameScene", {
-          level: nextLevel,
-          minigameManager,
-          showLevelIntro: true
-        });
-      } else {
-        // Minijuego completado - mostrar estadísticas y opciones
-        this.scene.stop("CongratulationsScene");
-        this.scene.start("MinigameCompletedScene", {
-          minigameType: minigameManager.minigameType,
-          progress: minigameManager.getMinigameProgress()
-        });
-      }
+      // TODO: Implementar navegación a siguiente nivel cuando esté disponible
+      // const nextLevel = this.levelResult.nextLevel || 1;
+      // this.scene.start("SequenceGameScene", { level: nextLevel });
     });
   }
 }
