@@ -45,7 +45,7 @@ export class SequenceGameScene extends Phaser.Scene {
     // Assets específicos del minijuego
     this.load.image("apple", "./assets/sprites/apple.svg");
     this.load.image("cuy", "./assets/sprites/cuy.png");
-    this.load.audio("correct", "./assets/sounds/sape.mp3");
+    // this.load.audio("correct", "./assets/sounds/sape.mp3");
     this.load.audio("error", "./assets/sounds/error.wav");
     this.load.image("bgMath", "./assets/bg/bg-level.jpg");
 
@@ -456,7 +456,7 @@ export class SequenceGameScene extends Phaser.Scene {
     this.disableAllDrags();
 
     // Sonido de éxito
-    this.sound.play("correct", { volume: 0.5 });
+    // this.sound.play("correct", { volume: 0.5 });
 
     // Animación de éxito
     container.x = this.targetArea.graphics.x;
