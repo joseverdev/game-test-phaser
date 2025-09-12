@@ -1,4 +1,5 @@
 import Phaser from "phaser";
+import { AudioManager } from "../../../managers/AudioManager";
 
 import { MinigameManager } from "../../../managers/MinigameManager.js";
 import { OverlayBox } from "@/shared/components/OverlayBox.js";
@@ -47,6 +48,10 @@ export class SequenceGameScene extends Phaser.Scene {
     this.load.audio("correct", "./assets/sounds/sape.mp3");
     this.load.audio("error", "./assets/sounds/error.wav");
     this.load.image("bgMath", "./assets/bg/bg-level.jpg");
+
+    // Load background music
+    const audioManager = AudioManager.getInstance();
+    audioManager.loadAudio(this);
   }
 
   create() {
@@ -70,6 +75,10 @@ export class SequenceGameScene extends Phaser.Scene {
         this.scene.start("MainMenuScene");
       }
     });
+
+    // Initialize background music
+    const audioManager = AudioManager.getInstance();
+    audioManager.initMusic(this);
     this.halfWidth = this.scale.width / 2;
     this.startTime = this.time.now;
 

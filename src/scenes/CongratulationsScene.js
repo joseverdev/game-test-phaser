@@ -2,6 +2,7 @@ import Phaser from "phaser";
 
 import { SCENE_HEIGHT, SCENE_WIDTH } from "@/modules/constanst";
 import { NavigationUI } from "@/shared/components/NavigationUI";
+import { AudioManager } from "@/managers/AudioManager";
 
 export class CongratulationsScene extends Phaser.Scene {
   constructor() {
@@ -19,9 +20,16 @@ export class CongratulationsScene extends Phaser.Scene {
     this.load.image("pennants", "./assets/objects/pennants.svg");
     this.load.audio("celebration", "./assets/sounds/children-celebration.wav");
     this.load.image("bgMath", "./assets/bg/bg-math.jpg");
+
+    // Load background music
+    const audioManager = AudioManager.getInstance();
+    audioManager.loadAudio(this);
   }
 
   create() {
+    // Initialize background music
+    const audioManager = AudioManager.getInstance();
+    audioManager.initMusic(this);
 
     this.navigationUI = new NavigationUI(this, {
 

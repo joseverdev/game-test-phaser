@@ -4,6 +4,7 @@ import { NavigationUI } from "@/shared/components/NavigationUI";
 import { OverlayBox } from "@/shared/components/OverlayBox";
 
 import { RoundedTextBox } from "../shared/components/RoundedTextBox";
+import { AudioManager } from "@/managers/AudioManager";
 
 export class MathMenuScene extends Phaser.Scene {
   constructor() {
@@ -14,12 +15,20 @@ export class MathMenuScene extends Phaser.Scene {
     this.load.image("bgMath", "./assets/bg/bg-math.jpg");
     this.load.image("avatar", "./assets/avatar/gato.png");
     this.load.image("flame", "./assets/objects/flame-64.png");
+
+    // Load background music
+    const audioManager = AudioManager.getInstance();
+    audioManager.loadAudio(this);
   }
 
   create() {
     // Fondo
     this.add.image(400, 300, "bgMath");
     this.overlay = new OverlayBox(this);
+
+    // Initialize background music
+    const audioManager = AudioManager.getInstance();
+    audioManager.initMusic(this);
     // Crear navegación - AQUÍ ES DONDE LA USAS
     this.navigationUI = new NavigationUI(this, {
       showBackButton: true,

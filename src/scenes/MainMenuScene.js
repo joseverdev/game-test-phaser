@@ -4,6 +4,7 @@ import { BackBtn } from "@/shared/components/BackBtn";
 import { CuyGuide } from "@/shared/components/CuyGuide";
 import { NavigationUI } from "@/shared/components/NavigationUI";
 import { OverlayBox } from "@/shared/components/OverlayBox";
+import { AudioManager } from "@/managers/AudioManager";
 
 export class MainMenuScene extends Phaser.Scene {
   constructor() {
@@ -18,10 +19,23 @@ export class MainMenuScene extends Phaser.Scene {
     this.load.image("cuy", "./assets/sprites/cuy.png");
     this.load.image("avatar", "./assets/avatar/gato.png");
     this.load.image("flame", "./assets/objects/flame-64.png");
+
+    // Load background music
+    const audioManager = AudioManager.getInstance();
+    audioManager.loadAudio(this);
   }
 
   create() {
     this.add.image(0, 0, "bg").setOrigin(0, 0).setDisplaySize(this.scale.width, this.scale.height);
+
+    // Initialize background music
+    const audioManager = AudioManager.getInstance();
+    audioManager.initMusic(this);
+
+    // Set user interacted on first click to allow autoplay
+    this.input.once("pointerdown", () => {
+      audioManager.setUserInteracted();
+    });
 
     // Crear botón de salir en la esquina superior izquierda
 

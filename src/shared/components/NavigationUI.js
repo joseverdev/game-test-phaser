@@ -1,12 +1,14 @@
 import Phaser from "phaser";
 
 import { BackBtn } from "./BackBtn";
+import { AudioManager } from "../../managers/AudioManager";
 
 export class NavigationUI extends Phaser.GameObjects.Container {
   constructor(scene, {
     showBackButton = true,
     showUserInfo = true,
     showStreakInfo = true,
+    showMusicToggle = true,
     userInfo = {
       name: "Jose",
       avatar: "avatar"
@@ -25,6 +27,7 @@ export class NavigationUI extends Phaser.GameObjects.Container {
       showBackButton,
       showUserInfo,
       showStreakInfo,
+      showMusicToggle,
       userInfo,
       streakInfo,
       onBackClick
@@ -34,7 +37,7 @@ export class NavigationUI extends Phaser.GameObjects.Container {
   }
 
   createNavigation() {
-    const { showBackButton, showUserInfo, showStreakInfo } = this.config;
+    const { showBackButton, showUserInfo, showStreakInfo, showMusicToggle } = this.config;
 
     // Botón de atrás
     if (showBackButton) {
@@ -49,6 +52,11 @@ export class NavigationUI extends Phaser.GameObjects.Container {
     // Información de racha
     if (showStreakInfo) {
       this.createStreakInfo();
+    }
+
+    // Toggle de música
+    if (showMusicToggle) {
+      this.createMusicToggle();
     }
   }
 
@@ -176,6 +184,43 @@ export class NavigationUI extends Phaser.GameObjects.Container {
     this.streakElements = { rightRect, numberText, flameIcon };
   }
 
+  createMusicToggle() {
+    const audioManager = AudioManager.getInstance();
+
+    // Position next to back button (assuming back button is ~40px wide at x=45)
+    const centerXMusicRect = 45 + 50; // 45 (back button x) + 50 (spacing + button width)
+    const centerYMusicRect = 36;
+
+    // Background circle
+    const musicBg = this.scene.add.graphics();
+    musicBg.fillStyle(audioManager.isMuted ? 0x666666 : 0x4CAF50, 1);
+    musicBg.fillCircle(centerXMusicRect, centerYMusicRect, 16);
+
+    // Icon text
+    const iconText = this.scene.add.text(centerXMusicRect, centerYMusicRect, audioManager.isMuted ? "🔇" : "🔊", {
+      fontSize: "16px",
+      fill: "#ffffff"
+    }).setOrigin(0.5, 0.5);
+
+    // Make interactive
+    musicBg.setInteractive(new Phaser.Geom.Circle(centerXMusicRect, centerYMusicRect, 16), Phaser.Geom.Circle.Contains);
+    iconText.setInteractive();
+
+    const toggleMusic = () => {
+      const isMuted = audioManager.toggleMute();
+      iconText.setText(isMuted ? "🔇" : "🔊");
+      musicBg.clear();
+      musicBg.fillStyle(isMuted ? 0x666666 : 0x4CAF50, 1);
+      musicBg.fillCircle(centerXMusicRect, centerYMusicRect, 16);
+    };
+
+    musicBg.on("pointerdown", toggleMusic);
+    iconText.on("pointerdown", toggleMusic);
+
+    this.add([musicBg, iconText]);
+    this.musicElements = { musicBg, iconText };
+  }
+
   // Métodos para actualizar información
   updateUserInfo(newUserInfo) {
     this.config.userInfo = { ...this.config.userInfo, ...newUserInfo };
@@ -210,6 +255,14 @@ export class NavigationUI extends Phaser.GameObjects.Container {
   setStreakInfoVisible(visible) {
     if (this.streakElements) {
       Object.values(this.streakElements).forEach(element => {
+        element.setVisible(visible);
+      });
+    }
+  }
+
+  setMusicToggleVisible(visible) {
+    if (this.musicElements) {
+      Object.values(this.musicElements).forEach(element => {
         element.setVisible(visible);
       });
     }
