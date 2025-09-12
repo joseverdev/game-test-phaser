@@ -197,7 +197,7 @@ export class NavigationUI extends Phaser.GameObjects.Container {
     musicBg.fillCircle(centerXMusicRect, centerYMusicRect, 16);
 
     // Icon text
-    const iconText = this.scene.add.text(centerXMusicRect, centerYMusicRect, audioManager.isMuted ? "🔇" : "🔊", {
+    const iconText = this.scene.add.text(centerXMusicRect, centerYMusicRect, "🎵", {
       fontSize: "16px",
       fill: "#ffffff"
     }).setOrigin(0.5, 0.5);
@@ -208,7 +208,6 @@ export class NavigationUI extends Phaser.GameObjects.Container {
 
     const toggleMusic = () => {
       const isMuted = audioManager.toggleMute();
-      iconText.setText(isMuted ? "🔇" : "🔊");
       musicBg.clear();
       musicBg.fillStyle(isMuted ? 0x666666 : 0x4CAF50, 1);
       musicBg.fillCircle(centerXMusicRect, centerYMusicRect, 16);
