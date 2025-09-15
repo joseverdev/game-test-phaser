@@ -34,9 +34,41 @@ export class MinigameManager {
     // case "matching":
     //   return MATCHING_LEVELS;
     default: {
-      throw new Error(`Unknown minigame type: ${this.minigameType}`);
+      // Return placeholder data for unsupported minigame types
+      console.warn(`Minigame type "${this.minigameType}" not implemented, using placeholder data`);
+      return this.getPlaceholderLevelData();
     }
     }
+  }
+
+  /**
+   * Get placeholder level data for unsupported minigame types
+   * @returns {object} Placeholder level data
+   */
+  getPlaceholderLevelData() {
+    const placeholderLevels = {};
+
+    // Create 20 placeholder levels
+    for (let i = 1; i <= 20; i++) {
+      placeholderLevels[i] = {
+        id: `${this.minigameType}_${i.toString().padStart(3, "0")}`,
+        sequence: ["?", "?", "?"], // Placeholder sequence
+        missingNumber: i,
+        availableOptions: [i, i + 1, i + 2],
+        targetPosition: 0,
+        difficulty: "coming_soon",
+        category: this.minigameType,
+        title: `Nivel ${i}`,
+        description: "Próximamente disponible",
+        hints: ["Esta sección estará disponible pronto"],
+        backgroundColor: 0xCCCCCC,
+        requiredStars: 0,
+        maxTime: 60,
+        points: 10
+      };
+    }
+
+    return placeholderLevels;
   }
 
   getConfig() {
@@ -45,9 +77,37 @@ export class MinigameManager {
       return SEQUENCE_MINIGAME_CONFIG;
     }
     default: {
-      throw new Error(`Unknown minigame type: ${this.minigameType}`);
+      // Return placeholder config for unsupported minigame types
+      console.warn(`Minigame type "${this.minigameType}" not implemented, using placeholder config`);
+      return this.getPlaceholderConfig();
     }
     }
+  }
+
+  /**
+   * Get placeholder config for unsupported minigame types
+   * @returns {object} Placeholder config
+   */
+  getPlaceholderConfig() {
+    return {
+      id: this.minigameType,
+      name: `${this.minigameType.charAt(0).toUpperCase() + this.minigameType.slice(1)} Game`,
+      description: "Próximamente disponible",
+      icon: "placeholder_icon.png",
+      thumbnail: "placeholder_thumb.png",
+      totalLevels: 20,
+      unlockRequirement: 0,
+      categories: [{
+        id: this.minigameType,
+        name: `${this.minigameType.charAt(0).toUpperCase() + this.minigameType.slice(1)}`,
+        levels: Array.from({length: 20}, (_, i) => i + 1)
+      }],
+      rewards: {
+        completion: 100,
+        perfectScore: 50,
+        speedBonus: 25
+      }
+    };
   }
 
   // === GESTIÓN DE NIVEL ACTUAL ===

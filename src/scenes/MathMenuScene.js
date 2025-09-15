@@ -5,6 +5,8 @@ import { OverlayBox } from "@/shared/components/OverlayBox";
 
 import { RoundedTextBox } from "../shared/components/RoundedTextBox";
 import { AudioManager } from "@/managers/AudioManager";
+import { ScenePersistenceManager } from "@/managers/ScenePersistenceManager";
+import { AssetManager } from "@/managers/AssetManager";
 
 export class MathMenuScene extends Phaser.Scene {
   constructor() {
@@ -12,9 +14,10 @@ export class MathMenuScene extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("bgMath", "./assets/bg/bg-math.jpg");
-    this.load.image("avatar", "./assets/avatar/gato.png");
-    this.load.image("flame", "./assets/objects/flame-64.png");
+    // Use AssetManager for safe loading to prevent conflicts on scene restoration
+    AssetManager.loadImageSafe(this, "bgMath", "./assets/bg/bg-math.jpg");
+    AssetManager.loadImageSafe(this, "avatar", "./assets/avatar/gato.png");
+    AssetManager.loadImageSafe(this, "flame", "./assets/objects/flame-64.png");
 
     // Load background music
     const audioManager = AudioManager.getInstance();
@@ -54,17 +57,31 @@ export class MathMenuScene extends Phaser.Scene {
       bgColor: 0x4FC3F7,
       onClick: () => {
         console.log("aprende los numeros");
+        // Save current scene before navigating
+        ScenePersistenceManager.saveCurrentScene("NumbersLevelMenuScene");
         this.scene.stop("MathMenuScene");
-        this.scene.start("SequenceGameScene", { level: 1 });
+        this.scene.start("NumbersLevelMenuScene");
       }
     });
-    this.roundedTextBox = new RoundedTextBox(this, 400, 200, "Aprende los numeros", {
+    this.roundedTextBox = new RoundedTextBox(this, 400, 200, "Aprende Sumas", {
       bgColor: 0xF06292,
-      onClick: () => { console.log("segundo"); }
+      onClick: () => {
+        console.log("aprende sumas");
+        // Save current scene before navigating
+        ScenePersistenceManager.saveCurrentScene("AdditionsLevelMenuScene");
+        this.scene.stop("MathMenuScene");
+        this.scene.start("AdditionsLevelMenuScene");
+      }
     });
-    this.roundedTextBox = new RoundedTextBox(this, 650, 200, "Aprende los numeros", {
+    this.roundedTextBox = new RoundedTextBox(this, 650, 200, "Aprende Restas", {
       bgColor: 0x81C784,
-      onClick: () => { console.log("terce cuadrado"); }
+      onClick: () => {
+        console.log("aprende restas");
+        // Save current scene before navigating
+        ScenePersistenceManager.saveCurrentScene("SubtractionsLevelMenuScene");
+        this.scene.stop("MathMenuScene");
+        this.scene.start("SubtractionsLevelMenuScene");
+      }
     });
   }
 }

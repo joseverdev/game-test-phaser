@@ -71,8 +71,8 @@ export class SequenceGameScene extends Phaser.Scene {
       onBackClick: () => {
         console.log("Salir del juego");
         // Aquí puedes agregar lógica para salir o ir a otra escena
-        this.scene.stop("MathMenuScene");
-        this.scene.start("MainMenuScene");
+        this.scene.stop("SequenceGameScene");
+        this.scene.start("LevelMenuScene");
       }
     });
 

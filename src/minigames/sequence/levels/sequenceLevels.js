@@ -33,7 +33,54 @@ export const SEQUENCE_LEVELS = {
     maxTime: 55,
     points: 110
   },
-
+  3:{
+    id: "seq_003",
+    sequence: [5, 6, "?", 8, 9],
+    missingNumber: 7,
+    availableOptions: [6, 7, 8],
+    targetPosition: 2,
+    difficulty: "easy",
+    category: "sequential",
+    title: "Números del 5 al 9",
+    description: "Encuentra el número que falta",
+    hints: ["Los números van uno tras otro", "5, 6, ?, 8, 9"],
+    backgroundColor: 0x4CAF50,
+    requiredStars: 2,
+    maxTime: 50,
+    points: 120
+  },
+  4: {
+    id: "seq_004",
+    sequence: [6, 7, "?", 9, 10],
+    missingNumber: 8,
+    availableOptions: [7, 8, 9],
+    targetPosition: 2,
+    difficulty: "easy",
+    category: "sequential",
+    title: "Números del 6 al 10",
+    description: "Completa la secuencia numérica",
+    hints: ["Los números van uno tras otro", "6, 7, ?, 9, 10"],
+    backgroundColor: 0x4CAF50,
+    requiredStars: 3,
+    maxTime: 50,
+    points: 120
+  },
+  5: {
+    id: "seq_005",
+    sequence: [1, "?", 3, 4, 5],
+    missingNumber: 2,
+    availableOptions: [1, 2, 3],
+    targetPosition: 1,
+    difficulty: "easy",
+    category: "sequential",
+    title: "Números del 1 al 5",
+    description: "Encuentra el número que falta",
+    hints: ["Los números van uno tras otro", "1, ?, 3, 4, 5"],
+    backgroundColor: 0x4CAF50,
+    requiredStars: 4,
+    maxTime: 50,
+    points: 120
+  },
   // === NÚMEROS PARES (6-10) ===
   6: {
     id: "seq_006",

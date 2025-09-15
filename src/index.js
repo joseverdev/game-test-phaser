@@ -5,6 +5,13 @@ import { SCENE_HEIGHT, SCENE_WIDTH } from "./modules/constanst";
 import { MathMenuScene } from "./scenes/MathMenuScene";
 import { CongratulationsScene } from "./scenes/CongratulationsScene";
 import { MainMenuScene } from "./scenes/MainMenuScene";
+import { LevelMenuScene } from "./scenes/LevelMenuScene";
+import { NumbersLevelMenuScene } from "./scenes/NumbersLevelMenuScene";
+import { AdditionsLevelMenuScene } from "./scenes/AdditionsLevelMenuScene";
+import { SubtractionsLevelMenuScene } from "./scenes/SubtractionsLevelMenuScene";
+import { LogicTowerLevelMenuScene } from "./scenes/LogicTowerLevelMenuScene";
+import { EnglishWorldLevelMenuScene } from "./scenes/EnglishWorldLevelMenuScene";
+import { ScenePersistenceManager } from "./managers/ScenePersistenceManager";
 // import { MinigameSelectScene } from "./scenes/navigation/MinigameSelectScene.js";
 
 const config = {
@@ -25,9 +32,15 @@ const config = {
   scene: [
     MainMenuScene,
     MathMenuScene,
+    LevelMenuScene,             // Reusable level menu component
+    NumbersLevelMenuScene,      // Menú de niveles de números
+    AdditionsLevelMenuScene,    // Menú de niveles de sumas
+    SubtractionsLevelMenuScene, // Menú de niveles de restas
+    LogicTowerLevelMenuScene,   // Menú de niveles de torre lógica
+    EnglishWorldLevelMenuScene, // Menú de niveles de mundo inglés
     // MinigameSelectScene,     // Selección de minijuego
-    SequenceGameScene,       // Tu minijuego de secuencias
-    CongratulationsScene,    // Felicitaciones
+    SequenceGameScene,          // Tu minijuego de secuencias
+    CongratulationsScene,       // Felicitaciones
     // TutoCSScene,            // Tutorial
   ],
   callbacks: {
@@ -117,7 +130,61 @@ function hideAddressBar() {
   }
 }
 
+// Define registered scenes for validation
+const REGISTERED_SCENES = [
+  "MainMenuScene",
+  "MathMenuScene",
+  "LevelMenuScene",
+  "NumbersLevelMenuScene",
+  "AdditionsLevelMenuScene",
+  "SubtractionsLevelMenuScene",
+  "LogicTowerLevelMenuScene",
+  "EnglishWorldLevelMenuScene",
+  "SequenceGameScene",
+  "CongratulationsScene"
+];
+
+// Check for saved scene and determine starting scene
+let startingScene = "MainMenuScene"; // Default fallback
+
+if (ScenePersistenceManager.hasSavedScene()) {
+  const savedSceneKey = ScenePersistenceManager.getSavedSceneKey();
+  const savedSceneData = ScenePersistenceManager.getSavedSceneData();
+
+  // Validate the saved scene
+  if (ScenePersistenceManager.isValidScene(savedSceneKey, REGISTERED_SCENES)) {
+    startingScene = savedSceneKey;
+    console.log(`Restoring saved scene: ${savedSceneKey}`);
+
+    // If we have scene data, we might need to pass it to the scene
+    if (savedSceneData) {
+      console.log("Scene data available:", savedSceneData);
+    }
+  } else {
+    console.warn(`Invalid saved scene: ${savedSceneKey}, falling back to MainMenuScene`);
+    ScenePersistenceManager.clearSavedScene(); // Clear invalid data
+  }
+}
+
+// Keep original scene configuration - scene restoration happens after game creation
+
 const game = new Phaser.Game(config);
+
+// Setup scene persistence after game creation
+ScenePersistenceManager.setupAutoTracking(game);
+
+// Handle scene restoration after game is ready
+game.events.once("ready", () => {
+  if (startingScene !== "MainMenuScene") {
+    console.log(`Starting with saved scene: ${startingScene}`);
+    const sceneData = ScenePersistenceManager.getSavedSceneData();
+    if (sceneData) {
+      game.scene.start(startingScene, sceneData);
+    } else {
+      game.scene.start(startingScene);
+    }
+  }
+});
 
 // Configurar eventos al cargar
 globalThis.addEventListener("load", () => {

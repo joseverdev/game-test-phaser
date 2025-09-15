@@ -5,20 +5,47 @@ import { CuyGuide } from "@/shared/components/CuyGuide";
 import { NavigationUI } from "@/shared/components/NavigationUI";
 import { OverlayBox } from "@/shared/components/OverlayBox";
 import { AudioManager } from "@/managers/AudioManager";
+import { ScenePersistenceManager } from "@/managers/ScenePersistenceManager";
+import { AssetManager } from "@/managers/AssetManager";
 
 export class MainMenuScene extends Phaser.Scene {
   constructor() {
     super({ key: "MainMenuScene", active: false });
   }
 
+  /**
+   * Check if CuyGuide should be shown for the main menu
+   * @returns {boolean} - True if it's the first visit
+   */
+  shouldShowMainMenuCuyGuide() {
+    const storageKey = "cuyguide_mainmenu_visited";
+    const hasVisited = localStorage.getItem(storageKey) === "true";
+
+    if (!hasVisited) {
+      // Mark as visited for future visits
+      localStorage.setItem(storageKey, "true");
+      return true; // Show CuyGuide on first visit
+    }
+
+    return false; // Don't show on subsequent visits
+  }
+
+  /**
+   * Reset MainMenu CuyGuide tracking (for testing)
+   */
+  static resetMainMenuCuyGuideTracking() {
+    localStorage.removeItem("cuyguide_mainmenu_visited");
+  }
+
   preload() {
-    this.load.image("bg", "./assets/bg/main-menu-bg.jpg");
-    this.load.image("castle", "./assets/objects/castle.svg");
-    this.load.image("tower", "./assets/objects/logic-tower.svg");
-    this.load.image("world", "./assets/objects/english-world.svg");
-    this.load.image("cuy", "./assets/sprites/cuy.png");
-    this.load.image("avatar", "./assets/avatar/gato.png");
-    this.load.image("flame", "./assets/objects/flame-64.png");
+    // Use AssetManager for safe loading to prevent conflicts on scene restoration
+    AssetManager.loadImageSafe(this, "bg", "./assets/bg/main-menu-bg.jpg");
+    AssetManager.loadImageSafe(this, "castle", "./assets/objects/castle.svg");
+    AssetManager.loadImageSafe(this, "tower", "./assets/objects/logic-tower.svg");
+    AssetManager.loadImageSafe(this, "world", "./assets/objects/english-world.svg");
+    AssetManager.loadImageSafe(this, "cuy", "./assets/sprites/cuy.png");
+    AssetManager.loadImageSafe(this, "avatar", "./assets/avatar/gato.png");
+    AssetManager.loadImageSafe(this, "flame", "./assets/objects/flame-64.png");
 
     // Load background music
     const audioManager = AudioManager.getInstance();
@@ -99,6 +126,8 @@ export class MainMenuScene extends Phaser.Scene {
           .on("pointerdown", () => {
             console.log("Clicked on", config.text);
             if (index === 0) {
+              // Save current scene before navigating
+              ScenePersistenceManager.saveCurrentScene("MathMenuScene");
               this.scene.start("MathMenuScene");
             }
           });
@@ -135,27 +164,31 @@ export class MainMenuScene extends Phaser.Scene {
         .on("pointerdown", () => {
           console.log("Clicked on", config.text);
           if (index === 0) {
+            // Save current scene before navigating
+            ScenePersistenceManager.saveCurrentScene("MathMenuScene");
             this.scene.start("MathMenuScene");
           }
         });
     });
 
-    // Con el nuevo componente:
-    this.cuyGuide = new CuyGuide(this, 530, 390, {
-      dialogPosition: "left",
-      dialogConfig: {
-        width: 280,
-        height: 120,
-        textStyle: {
-          fontSize: "16px",
-          fill: "#333333",
-          fontFamily: "Fredoka"
+    // Cuy Guide - Only show on first visit to main menu
+    if (this.shouldShowMainMenuCuyGuide()) {
+      this.cuyGuide = new CuyGuide(this, 530, 390, {
+        dialogPosition: "left",
+        dialogConfig: {
+          width: 280,
+          height: 120,
+          textStyle: {
+            fontSize: "16px",
+            fill: "#333333",
+            fontFamily: "Fredoka"
+          }
         }
-      }
-    });
+      });
 
-    // Mostrar mensaje de bienvenida
-    this.cuyGuide.showDialog("¡Hola! Soy tu guía. Selecciona una de las tres aventuras para comenzar.", 4000);
+      // Mostrar mensaje de bienvenida
+      this.cuyGuide.showDialog("¡Hola! Soy tu guía. Selecciona una de las tres aventuras para comenzar.", 4000);
+    }
 
     this.backBtn = new BackBtn(this, 45, 36, {
       onClick: () => {

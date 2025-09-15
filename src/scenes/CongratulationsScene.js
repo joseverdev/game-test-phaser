@@ -48,7 +48,7 @@ export class CongratulationsScene extends Phaser.Scene {
         console.log("Salir del juego");
         // Aquí puedes agregar lógica para salir o ir a otra escena
         this.scene.stop("CongratulationsScene");
-        this.scene.start("MathMenuScene");
+        this.scene.start("LevelMenuScene");
       }
     });
 
